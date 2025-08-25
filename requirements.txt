@@ -1,0 +1,22 @@
+# Framework web
+flask==3.0.3
+python-dotenv==1.0.1
+
+# Twilio para WhatsApp
+twilio==9.2.3
+
+# OpenAI API
+openai==1.35.3
+
+# Slack SDK
+slack_sdk==3.27.0
+
+# Banco de dados em memória / cache
+redis==5.0.7
+
+# Vetorização e RAG
+faiss-cpu==1.8.0.post1
+sentence-transformers==3.0.1
+
+# Servidor de produção
+gunicorn==23.0.0
