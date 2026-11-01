@@ -19,7 +19,7 @@ def obter_sessao(user_id):
         print(f"Erro ao obter sessão no Redis para {user_id}: {e}")
     
     # Retorna uma sessão padrão se não houver dados
-    return {"historico":, "handoff_ativo": False}
+    return {"historico": [], "handoff_ativo": False}
 
 def salvar_sessao(user_id, session_data):
     """Salva o objeto de sessão completo no Redis."""
@@ -32,7 +32,7 @@ def salvar_sessao(user_id, session_data):
 def adicionar_mensagem_ao_historico(session_data, user_msg, bot_msg, max_historico=10):
     """Adiciona uma nova interação ao histórico dentro do objeto de sessão."""
     if "historico" not in session_data:
-        session_data["historico"] = 
+        session_data["historico"] = []
     
     session_data["historico"].append({"user": user_msg, "bot": bot_msg})
     

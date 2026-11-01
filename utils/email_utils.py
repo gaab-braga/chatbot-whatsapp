@@ -6,9 +6,9 @@ def enviar_email(assunto, corpo):
     """Envia um e-mail usando as credenciais do ambiente."""
     try:
         msg = MIMEText(corpo)
-        msg = assunto
+        msg["Subject"] = assunto
         msg["From"] = os.getenv("EMAIL_USER")
-        msg = os.getenv("EMAIL_TO") # Usar um destinatário separado
+        msg["To"] = os.getenv("EMAIL_TO") # Usar um destinatário separado
 
         smtp_server = os.getenv("SMTP_SERVER")
         smtp_port = int(os.getenv("SMTP_PORT"))

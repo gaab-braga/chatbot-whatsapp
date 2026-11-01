@@ -25,13 +25,13 @@ def validate_twilio_request(f):
         return f(*args, **kwargs)
     return decorated_function
 
-@whatsapp_bp.route("/message", methods=)
+@whatsapp_bp.route("/message", methods=["POST"])
 @validate_twilio_request
 def message():
     """Recebe, processa e responde às mensagens do WhatsApp com lógica de handoff."""
     data = request.form
     user_number = data.get("From")
-    user_message = data.get("Body")
+    user_message = data.get("Body", "")
 
     # Obtém a sessão completa do usuário, incluindo o estado de handoff
     sessao = obter_sessao(user_number)
@@ -62,7 +62,7 @@ def message():
     # --- LÓGICA NORMAL DO BOT (se não houver handoff) ---
     
     # Gera resposta usando a IA com o histórico da sessão
-    resposta_ia = gerar_resposta(user_message, sessao.get("historico", ))
+    resposta_ia = gerar_resposta(user_message, sessao.get("historico", []))
 
     # Verifica se a própria IA sugeriu o handoff
     if resposta_ia.lower() == "handoff":
