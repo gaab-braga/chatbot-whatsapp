@@ -4,7 +4,9 @@ import numpy as np
 import os
 
 # --- Configuração e Carregamento Inicial ---
-KNOWLEDGE_BASE_PATH = "knowledge_base/documentos.md"
+# Caminho a partir da raiz do projeto, para funcionar de qualquer pasta
+RAIZ_PROJETO = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+KNOWLEDGE_BASE_PATH = os.path.join(RAIZ_PROJETO, "knowledge_base", "documentos.md")
 MODEL_NAME = 'all-MiniLM-L6-v2'
 
 # Carrega o modelo de embedding. Este objeto é pesado e deve ser carregado apenas uma vez.
@@ -15,7 +17,7 @@ print("Modelo carregado.")
 def carregar_documentos(path):
     """Carrega e divide o documento da base de conhecimento em chunks."""
     if not os.path.exists(path):
-        return
+        return []
     with open(path, "r", encoding="utf-8") as f:
         # Divide o documento por duas quebras de linha (parágrafos)
         chunks = f.read().split("\n\n")
@@ -27,7 +29,7 @@ def criar_indice_faiss(chunks):
         return None
     print("Criando embeddings para a base de conhecimento...")
     embeddings = model.encode(chunks)
-    dimension = embeddings.shape
+    dimension = embeddings.shape[1]
     index = faiss.IndexFlatL2(dimension)
     index.add(np.array(embeddings, dtype=np.float32))
     print("Índice FAISS criado com sucesso.")
@@ -46,5 +48,6 @@ def buscar_contexto_relevante(query, top_k=3):
     query_embedding = model.encode([query])
     _, indices = indice_faiss_global.search(np.array(query_embedding, dtype=np.float32), top_k)
     
-    contexto = "\n---\n".join([chunks_globais[i] for i in indices])
+    # indices tem formato (1, top_k); o FAISS devolve -1 quando a base tem menos de top_k chunks
+    contexto = "\n---\n".join([chunks_globais[i] for i in indices[0] if i != -1])
     return contexto

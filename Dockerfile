@@ -5,13 +5,13 @@ FROM python:3.11-slim
 WORKDIR /app
 
 # Copia o arquivo de dependências
-COPY requirements.txt.
+COPY requirements.txt .
 
 # Instala as dependências
 RUN pip install --no-cache-dir -r requirements.txt
 
 # Copia todo o código da aplicação para o diretório de trabalho
-COPY..
+COPY . .
 
 # Expõe a porta que o Gunicorn irá rodar
 EXPOSE 5000
